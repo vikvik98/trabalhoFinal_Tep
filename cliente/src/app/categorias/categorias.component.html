@@ -1,0 +1,15 @@
+<input #nome type="text" placeholder="Nome de categoria">
+<button (click)="post(nome.value)">Criar</button>
+<ul>
+    <div *ngFor="let categoria of categorias">
+      <li>
+        <p>
+          Nome: {{categoria.nome}}<br>
+        </p>
+  
+      </li>
+  
+  
+    </div>
+  
+  </ul>

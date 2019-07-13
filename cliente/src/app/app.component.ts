@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Filme } from './filme';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'atividade';
+  
+
+  constructor() { }
+
+  ngOnInit() {
+    
+    
+  }
+
+
 }

@@ -1,0 +1,32 @@
+<div>
+
+  <h5>Login</h5>
+  <div>
+    <div>
+      <form>
+        <div>
+          <label>Nome de usuario</label>
+          <input #username type="text" placeholder="Nome de usuario">
+        </div>
+        <div>
+          <label>Senha</label>
+          <input #password type="password" placeholder="password">
+        </div>
+      </form>
+      <div>
+        <button (click)="login(username.value, password.value)">login</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div *ngIf="error">
+  <div role="alert">
+    {{ error?.message }}
+    {{ error?.error | json }}
+    <button type="button" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+</div>

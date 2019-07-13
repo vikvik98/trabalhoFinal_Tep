@@ -1,23 +1,25 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
+import { CanActivate, Router } from '@angular/router';
+
+import { Observable } from 'rxjs';
+import { tap, shareReplay } from 'rxjs/operators';
 
 import * as jwtDecode from 'jwt-decode';
 import * as moment from 'moment';
-import {shareReplay, tap} from 'rxjs/operators';
-import {Observable} from 'rxjs';
-import {CanActivate, Router} from '@angular/router';
+
+import { environment } from '../environments/environment';
 
 @Injectable()
 export class AuthService {
 
-  private apiAuthRoot = 'http://localhost:8000/auth/';
+  private apiRoot = 'http://localhost:8000/auth/';
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) { }
 
   private setSession(authResult) {
     const token = authResult.token;
-    const payload = jwtDecode(token) as JWTPayload;
+    const payload = <JWTPayload> jwtDecode(token);
     const expiresAt = moment.unix(payload.exp);
 
     localStorage.setItem('token', authResult.token);
@@ -30,12 +32,16 @@ export class AuthService {
 
   login(username: string, password: string) {
     return this.http.post(
-      this.apiAuthRoot.concat('login/'),
-      {username: username, password: password}
+      this.apiRoot.concat('login/'),
+      { username, password }
     ).pipe(
       tap(response => this.setSession(response)),
       shareReplay(),
     );
+  }
+
+  signup(username: string, email: string, password1: string, password2: string) {
+    // TODO: implement signup
   }
 
   logout() {
@@ -46,8 +52,8 @@ export class AuthService {
   refreshToken() {
     if (moment().isBetween(this.getExpiration().subtract(1, 'days'), this.getExpiration())) {
       return this.http.post(
-        this.apiAuthRoot.concat('refresh-token/'),
-        {token: this.token}
+        this.apiRoot.concat('refresh-token/'),
+        { token: this.token }
       ).pipe(
         tap(response => this.setSession(response)),
         shareReplay(),
@@ -92,8 +98,7 @@ export class AuthInterceptor implements HttpInterceptor {
 @Injectable()
 export class AuthGuard implements CanActivate {
 
-  constructor(private authService: AuthService, private router: Router) {
-  }
+  constructor(private authService: AuthService, private router: Router) { }
 
   canActivate() {
     if (this.authService.isLoggedIn()) {
